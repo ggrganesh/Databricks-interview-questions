@@ -1,0 +1,1523 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>AWS Databricks Platform Administration — Training Guide</title>
+<style>
+  @page { size: A4; margin: 18mm 14mm 18mm 14mm; }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; }
+  body {
+    font-family: "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+    color: #1f2937;
+    font-size: 11pt;
+    line-height: 1.55;
+  }
+  h1, h2, h3, h4 { color: #0b3d91; margin-top: 0.6em; margin-bottom: 0.3em; }
+  h1 { font-size: 26pt; }
+  h2 { font-size: 18pt; border-bottom: 3px solid #ff3621; padding-bottom: 4px; margin-top: 24px; page-break-after: avoid; }
+  h3 { font-size: 13pt; color: #ff3621; margin-top: 18px; page-break-after: avoid; }
+  h4 { font-size: 11.5pt; color: #0b3d91; margin-top: 10px; }
+  p { margin: 6px 0; text-align: justify; }
+  ul, ol { margin: 6px 0 8px 22px; padding: 0; }
+  li { margin: 3px 0; }
+  code {
+    background: #f3f4f6; padding: 1px 5px; border-radius: 3px;
+    font-family: Consolas, "Courier New", monospace; font-size: 10pt; color: #b91c1c;
+  }
+  pre {
+    background: #0f172a; color: #e2e8f0; padding: 12px 14px; border-radius: 6px;
+    font-family: Consolas, monospace; font-size: 9.5pt; line-height: 1.45; overflow-x: auto;
+    page-break-inside: avoid;
+  }
+  table {
+    width: 100%; border-collapse: collapse; margin: 10px 0;
+    font-size: 10pt; page-break-inside: avoid;
+  }
+  th, td { border: 1px solid #cbd5e1; padding: 6px 8px; vertical-align: top; text-align: left; }
+  th { background: #0b3d91; color: #fff; }
+  tr:nth-child(even) td { background: #f8fafc; }
+  blockquote {
+    background: #fff7f5; border-left: 5px solid #ff3621;
+    padding: 8px 14px; margin: 10px 0; border-radius: 4px;
+    color: #374151; font-style: normal;
+  }
+  blockquote p { margin: 4px 0; }
+  .cover { page-break-after: always; text-align: center; padding-top: 30mm; }
+  .cover h1 { font-size: 32pt; color: #ff3621; margin-bottom: 6px; }
+  .cover h2 { font-size: 20pt; color: #0b3d91; border: none; margin-top: 0; }
+  .cover .sub { color: #475569; margin-top: 14px; font-size: 13pt; }
+  .cover .meta { margin-top: 28mm; color: #64748b; font-size: 11pt; }
+  .toc { page-break-after: always; }
+  .toc ol { font-size: 11pt; }
+  .toc a { color: #0b3d91; text-decoration: none; }
+  .tip {
+    background: #ecfdf5; border-left: 5px solid #10b981;
+    padding: 8px 12px; margin: 10px 0; border-radius: 4px; font-size: 10.5pt;
+  }
+  .warn {
+    background: #fef2f2; border-left: 5px solid #dc2626;
+    padding: 8px 12px; margin: 10px 0; border-radius: 4px; font-size: 10.5pt;
+  }
+  .note {
+    background: #eff6ff; border-left: 5px solid #0ea5e9;
+    padding: 8px 12px; margin: 10px 0; border-radius: 4px; font-size: 10.5pt;
+  }
+  .recap {
+    background: #fff7ed; border-left: 5px solid #f97316;
+    padding: 10px 14px; margin: 14px 0; border-radius: 4px;
+    page-break-inside: avoid;
+  }
+  .recap b { color: #c2410c; }
+  .lab {
+    background: #f0f9ff; border: 1px solid #bae6fd;
+    padding: 10px 14px; margin: 12px 0; border-radius: 6px;
+    page-break-inside: avoid;
+  }
+  .lab .lab-title {
+    color: #075985; font-weight: bold; font-size: 13pt;
+    border-bottom: 2px solid #bae6fd; padding-bottom: 4px; margin-bottom: 8px;
+  }
+  .diagram { text-align: center; margin: 14px 0; page-break-inside: avoid; }
+  .diagram svg { max-width: 100%; height: auto; }
+  .diagram .cap { font-size: 9.5pt; color: #64748b; margin-top: 4px; }
+  .badge {
+    display: inline-block; padding: 2px 9px; border-radius: 10px;
+    font-size: 9pt; color: #fff; background: #0b3d91; margin-right: 5px;
+  }
+  .badge.adv { background: #b91c1c; }
+  .badge.mid { background: #ea580c; }
+  .badge.basic { background: #047857; }
+  .footer-note {
+    text-align: center; color: #94a3b8; font-size: 9pt; margin-top: 30px;
+    border-top: 1px solid #e5e7eb; padding-top: 8px;
+  }
+  section { page-break-before: auto; }
+  .qnum {
+    display: inline-block; background: #ff3621; color: #fff;
+    padding: 1px 8px; border-radius: 3px; font-weight: bold;
+    font-size: 10pt; margin-right: 6px;
+  }
+  .pre-ascii {
+    background: #f8fafc; color: #0f172a; border: 1px solid #cbd5e1;
+    padding: 12px 14px; border-radius: 6px;
+    font-family: Consolas, monospace; font-size: 9pt; line-height: 1.3;
+    white-space: pre; overflow-x: auto; page-break-inside: avoid;
+  }
+</style>
+</head>
+<body>
+
+<!-- =============== COVER =============== -->
+<div class="cover">
+  <div style="background:linear-gradient(135deg,#ff3621 0%,#0b3d91 100%);height:8mm;width:100%;margin-bottom:18mm;"></div>
+  <h1>AWS Databricks</h1>
+  <h2>Platform Administration</h2>
+  <h2 style="color:#ff3621;">Beginner-Friendly Training Guide</h2>
+  <div class="sub">
+    A complete 1–2 day instructor-led course<br>
+    Architecture &middot; Governance &middot; Security &middot; Cost &middot; Hands-on Labs
+  </div>
+  <div style="margin-top:18mm;">
+    <svg width="320" height="200" viewBox="0 0 320 200" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <linearGradient id="lg1" x1="0" x2="1">
+          <stop offset="0" stop-color="#ff3621"/>
+          <stop offset="1" stop-color="#0b3d91"/>
+        </linearGradient>
+      </defs>
+      <rect x="20" y="40" width="280" height="130" rx="10" fill="url(#lg1)" opacity="0.12" stroke="url(#lg1)" stroke-width="2"/>
+      <text x="160" y="80" text-anchor="middle" font-size="15" fill="#0b3d91" font-weight="bold">DATABRICKS LAKEHOUSE ON AWS</text>
+      <text x="160" y="105" text-anchor="middle" font-size="11" fill="#475569">Unity Catalog &middot; Delta Lake &middot; Photon</text>
+      <text x="160" y="125" text-anchor="middle" font-size="11" fill="#475569">EC2 &middot; S3 &middot; VPC &middot; IAM &middot; KMS</text>
+      <text x="160" y="148" text-anchor="middle" font-size="10" fill="#64748b">Admin &middot; Govern &middot; Secure &middot; Optimize</text>
+    </svg>
+  </div>
+  <div class="meta">
+    Audience: Students, junior cloud/data engineers, aspiring Databricks admins<br>
+    Duration: 1–2 days &middot; ≈ 12–14 hours including labs
+  </div>
+</div>
+
+<!-- =============== TOC =============== -->
+<div class="toc">
+  <h2>Table of Contents</h2>
+  <ol>
+    <li><a href="#s1">Introduction to Databricks</a></li>
+    <li><a href="#s2">AWS Databricks Architecture</a></li>
+    <li><a href="#s3">Workspace Administration</a></li>
+    <li><a href="#s4">Cluster Administration</a></li>
+    <li><a href="#s5">Unity Catalog Administration</a></li>
+    <li><a href="#s6">Security Administration</a></li>
+    <li><a href="#s7">Jobs and Workflow Administration</a></li>
+    <li><a href="#s8">Databricks SQL Administration</a></li>
+    <li><a href="#s9">Monitoring and Cost Optimization</a></li>
+    <li><a href="#s10">Databricks CLI and Automation</a></li>
+    <li><a href="#s11">Hands-on Labs</a></li>
+    <li><a href="#s12">Admin Best Practices</a></li>
+    <li><a href="#s13">Troubleshooting Quick Reference</a></li>
+    <li><a href="#s14">Glossary of Key Terms</a></li>
+    <li><a href="#s15">Final Summary</a></li>
+    <li><a href="#s16">Interview-Style Questions</a></li>
+  </ol>
+  <div class="note">
+    <b>How to use this guide:</b> Read each section, then complete the corresponding lab in Section 11. End-of-section recap boxes reinforce key points. Interview questions in Section 16 help you self-assess.
+  </div>
+</div>
+
+<!-- =============== SECTION 1 =============== -->
+<section id="s1">
+<h2>1. Introduction to Databricks</h2>
+
+<div class="note">
+Before diving into administration, let's understand what Databricks is, why it has become so popular, and how it fits in the modern data stack.
+</div>
+
+<h3>1.1 What is Databricks?</h3>
+<p><b>Databricks</b> is a unified, cloud-based data analytics and AI platform built on top of <b>Apache Spark</b>, <b>Delta Lake</b>, and <b>MLflow</b> — all originally created by the founders of Databricks.</p>
+<p>It provides a single environment for:</p>
+<ul>
+  <li><b>Data engineering</b> — ETL/ELT, batch + streaming ingestion</li>
+  <li><b>Data warehousing</b> — SQL analytics over Delta tables</li>
+  <li><b>Data science &amp; machine learning</b> — model training, MLflow, serving</li>
+  <li><b>Business intelligence</b> — dashboards, alerts, embedded analytics</li>
+  <li><b>Governance</b> — unified security and lineage via Unity Catalog</li>
+</ul>
+<p>Databricks runs on <b>AWS</b>, <b>Azure</b>, and <b>GCP</b>. This guide focuses on AWS.</p>
+
+<h3>1.2 Why Organizations Use Databricks</h3>
+<table>
+  <tr><th>Reason</th><th>Explanation</th></tr>
+  <tr><td>Unified Platform</td><td>One platform for data engineering, BI, and ML</td></tr>
+  <tr><td>Open Source Foundation</td><td>Built on Spark, Delta Lake, MLflow, Iceberg</td></tr>
+  <tr><td>Performance</td><td>Photon engine — typically 3–10× faster than open Spark</td></tr>
+  <tr><td>Elastic Scale</td><td>Handles TB to PB with autoscaling clusters</td></tr>
+  <tr><td>Collaboration</td><td>Notebooks, dashboards, Git-backed Repos</td></tr>
+  <tr><td>Cost Efficiency</td><td>Pay-as-you-go, autoscale, auto-terminate, spot</td></tr>
+  <tr><td>Governance</td><td>Unity Catalog: centralized, fine-grained</td></tr>
+  <tr><td>Open Standards</td><td>Delta Lake is open; data stays in your S3</td></tr>
+</table>
+
+<h3>1.3 The Databricks Lakehouse Platform</h3>
+<div class="note">
+The <b>Lakehouse</b> combines the scale and flexibility of a <b>data lake</b> with the performance and reliability of a <b>data warehouse</b>.
+</div>
+
+<div class="diagram">
+<svg width="640" height="280" viewBox="0 0 640 280" xmlns="http://www.w3.org/2000/svg">
+  <style>
+    .ttl{font-family:Segoe UI;font-weight:bold;font-size:12px;fill:#0b3d91;}
+    .lbl{font-family:Segoe UI;font-size:11px;fill:#1f2937;}
+    .sub{font-family:Segoe UI;font-size:10px;fill:#475569;}
+  </style>
+  <rect x="40" y="20"  width="560" height="40" rx="5" fill="#ff3621" opacity="0.85"/>
+  <text x="320" y="46" text-anchor="middle" fill="#fff" class="lbl">BI &amp; SQL  |  Data Science  |  ML / AI  |  Streaming</text>
+
+  <rect x="40" y="70"  width="560" height="40" rx="5" fill="#0b3d91" opacity="0.85"/>
+  <text x="320" y="96" text-anchor="middle" fill="#fff" class="lbl">Unity Catalog (Governance &amp; Lineage)</text>
+
+  <rect x="40" y="120" width="560" height="40" rx="5" fill="#0b3d91" opacity="0.65"/>
+  <text x="320" y="146" text-anchor="middle" fill="#fff" class="lbl">Delta Lake (ACID Storage Layer)</text>
+
+  <rect x="40" y="170" width="560" height="40" rx="5" fill="#0b3d91" opacity="0.45"/>
+  <text x="320" y="196" text-anchor="middle" fill="#fff" class="lbl">Cloud Object Storage (Amazon S3)</text>
+
+  <text x="320" y="240" text-anchor="middle" class="sub">One storage layer, ACID, time-travel, open Parquet/Delta format</text>
+</svg>
+<div class="cap">Figure 1.1 — Databricks Lakehouse logical layers</div>
+</div>
+
+<h3>1.4 Medallion Architecture (Bronze / Silver / Gold)</h3>
+<table>
+  <tr><th>Layer</th><th>Purpose</th><th>Example</th></tr>
+  <tr><td><b>Bronze</b></td><td>Raw ingested data, as-is</td><td>Raw JSON events from Kafka</td></tr>
+  <tr><td><b>Silver</b></td><td>Cleansed, conformed, deduped</td><td>Validated, joined customer records</td></tr>
+  <tr><td><b>Gold</b></td><td>Curated, business-level aggregates</td><td>Daily sales by region for dashboards</td></tr>
+</table>
+
+<div class="diagram">
+<svg width="640" height="120" viewBox="0 0 640 120" xmlns="http://www.w3.org/2000/svg">
+  <style>
+    .lbl{font-family:Segoe UI;font-size:11px;fill:#fff;font-weight:bold;}
+    .sub{font-family:Segoe UI;font-size:9.5px;fill:#475569;}
+  </style>
+  <rect x="20" y="40" width="120" height="50" rx="6" fill="#94a3b8"/>
+  <text x="80" y="70" text-anchor="middle" class="lbl">Sources</text>
+  <rect x="170" y="40" width="120" height="50" rx="6" fill="#a16207"/>
+  <text x="230" y="70" text-anchor="middle" class="lbl">Bronze (Raw)</text>
+  <rect x="320" y="40" width="120" height="50" rx="6" fill="#94a3b8"/>
+  <text x="380" y="70" text-anchor="middle" class="lbl">Silver (Refined)</text>
+  <rect x="470" y="40" width="120" height="50" rx="6" fill="#ca8a04"/>
+  <text x="530" y="70" text-anchor="middle" class="lbl">Gold (Curated)</text>
+
+  <polygon points="140,65 170,65 170,60 175,65 170,70 170,65" fill="#475569"/>
+  <line x1="140" y1="65" x2="170" y2="65" stroke="#475569" stroke-width="2"/>
+  <polygon points="290,65 320,65 320,60 325,65 320,70 320,65" fill="#475569"/>
+  <line x1="290" y1="65" x2="320" y2="65" stroke="#475569" stroke-width="2"/>
+  <polygon points="440,65 470,65 470,60 475,65 470,70 470,65" fill="#475569"/>
+  <line x1="440" y1="65" x2="470" y2="65" stroke="#475569" stroke-width="2"/>
+
+  <text x="320" y="110" text-anchor="middle" class="sub">Sources → Bronze → Silver → Gold → BI / ML</text>
+</svg>
+</div>
+
+<h3>1.5 Databricks on AWS Overview</h3>
+<table>
+  <tr><th>AWS Service</th><th>Used For</th></tr>
+  <tr><td>EC2</td><td>Cluster compute (driver + workers)</td></tr>
+  <tr><td>S3</td><td>Data and notebook results storage</td></tr>
+  <tr><td>VPC</td><td>Networking isolation</td></tr>
+  <tr><td>IAM</td><td>Authentication + AWS resource access</td></tr>
+  <tr><td>KMS</td><td>Encryption keys</td></tr>
+  <tr><td>CloudWatch</td><td>Monitoring + logs</td></tr>
+  <tr><td>PrivateLink</td><td>Private control plane connectivity</td></tr>
+  <tr><td>Secrets Manager</td><td>Backing store for secret scopes</td></tr>
+  <tr><td>CloudTrail</td><td>AWS-level audit trail</td></tr>
+</table>
+
+<div class="recap">
+<b>Recap — Section 1</b>
+<ul>
+  <li>Databricks unifies data engineering, BI, and ML on Spark + Delta + MLflow.</li>
+  <li>Lakehouse combines lake + warehouse capabilities.</li>
+  <li>Medallion (Bronze/Silver/Gold) is the standard pattern for organizing Delta data.</li>
+  <li>On AWS, Databricks deeply integrates with EC2, S3, VPC, IAM, KMS, PrivateLink.</li>
+</ul>
+</div>
+</section>
+
+<!-- =============== SECTION 2 =============== -->
+<section id="s2">
+<h2>2. AWS Databricks Architecture</h2>
+
+<div class="note">
+Understanding the architecture is the foundation of every security, cost, and networking decision an admin makes.
+</div>
+
+<h3>2.1 Control Plane vs Compute Plane</h3>
+<table>
+  <tr><th>Plane</th><th>Runs In</th><th>Contains</th></tr>
+  <tr><td>Control Plane</td><td>Databricks-managed AWS account</td><td>Web UI, REST APIs, scheduler, notebook source, cluster mgr, UC metastore service, audit</td></tr>
+  <tr><td>Classic Compute Plane</td><td>Customer AWS account</td><td>EC2 driver + worker nodes processing data</td></tr>
+  <tr><td>Serverless Compute Plane</td><td>Databricks-managed AWS account</td><td>Managed compute for SQL warehouses, jobs, model serving</td></tr>
+</table>
+
+<div class="tip"><b>Important:</b> With Classic compute, your data <b>never leaves your AWS account</b>. Only commands, metadata, and notebook source code flow through the Control Plane.</div>
+
+<h3>2.2 Two-Plane Architecture Diagram</h3>
+
+<div class="diagram">
+<svg width="660" height="360" viewBox="0 0 660 360" xmlns="http://www.w3.org/2000/svg">
+  <style>
+    .title{font-family:Segoe UI;font-weight:bold;font-size:13px;fill:#0b3d91;}
+    .lbl{font-family:Segoe UI;font-size:11px;fill:#1f2937;}
+    .sub{font-family:Segoe UI;font-size:10px;fill:#475569;}
+  </style>
+  <rect x="10" y="20" width="310" height="320" rx="10" fill="#fff7f5" stroke="#ff3621" stroke-width="2"/>
+  <text x="165" y="42" text-anchor="middle" class="title">CONTROL PLANE</text>
+  <text x="165" y="58" text-anchor="middle" class="sub">(Databricks-managed AWS Account)</text>
+
+  <rect x="30"  y="75" width="120" height="40" rx="5" fill="#ff3621" opacity="0.85"/>
+  <text x="90"  y="100" text-anchor="middle" fill="#fff" class="lbl">Web UI / REST API</text>
+  <rect x="170" y="75" width="130" height="40" rx="5" fill="#ff3621" opacity="0.85"/>
+  <text x="235" y="100" text-anchor="middle" fill="#fff" class="lbl">Notebook Service</text>
+
+  <rect x="30"  y="125" width="120" height="40" rx="5" fill="#ff3621" opacity="0.7"/>
+  <text x="90"  y="150" text-anchor="middle" fill="#fff" class="lbl">Job Scheduler</text>
+  <rect x="170" y="125" width="130" height="40" rx="5" fill="#ff3621" opacity="0.7"/>
+  <text x="235" y="150" text-anchor="middle" fill="#fff" class="lbl">Cluster Manager</text>
+
+  <rect x="30" y="175" width="270" height="40" rx="5" fill="#ff3621" opacity="0.55"/>
+  <text x="165" y="200" text-anchor="middle" fill="#fff" class="lbl">Unity Catalog Metastore Service</text>
+
+  <rect x="30" y="225" width="270" height="40" rx="5" fill="#ff3621" opacity="0.4"/>
+  <text x="165" y="250" text-anchor="middle" fill="#fff" class="lbl">Audit Logs / Usage / Lineage</text>
+
+  <text x="165" y="295" text-anchor="middle" class="sub">Metadata, source code, scheduling</text>
+  <text x="165" y="310" text-anchor="middle" class="sub">never your raw data</text>
+
+  <rect x="340" y="20" width="310" height="320" rx="10" fill="#eff6ff" stroke="#0b3d91" stroke-width="2"/>
+  <text x="495" y="42" text-anchor="middle" class="title">COMPUTE PLANE (Customer AWS)</text>
+  <text x="495" y="58" text-anchor="middle" class="sub">Your VPC, your S3, your IAM</text>
+
+  <rect x="360" y="75" width="270" height="55" rx="5" fill="#0b3d91" opacity="0.85"/>
+  <text x="495" y="98"  text-anchor="middle" fill="#fff" class="lbl">Spark Clusters (Driver + Workers)</text>
+  <text x="495" y="115" text-anchor="middle" fill="#fff" class="sub">EC2 inside your VPC</text>
+
+  <rect x="360" y="140" width="270" height="40" rx="5" fill="#0b3d91" opacity="0.7"/>
+  <text x="495" y="165" text-anchor="middle" fill="#fff" class="lbl">SQL Warehouses (Photon)</text>
+
+  <rect x="360" y="190" width="270" height="40" rx="5" fill="#0b3d91" opacity="0.55"/>
+  <text x="495" y="215" text-anchor="middle" fill="#fff" class="lbl">S3 (DBFS, UC Managed, Lakehouse)</text>
+
+  <rect x="360" y="240" width="270" height="40" rx="5" fill="#0b3d91" opacity="0.4"/>
+  <text x="495" y="265" text-anchor="middle" fill="#fff" class="lbl">VPC, NAT GW, KMS, PrivateLink</text>
+
+  <text x="495" y="305" text-anchor="middle" class="sub">Data never leaves your account</text>
+
+  <line x1="320" y1="180" x2="340" y2="180" stroke="#0b3d91" stroke-width="2" stroke-dasharray="4 3"/>
+  <polygon points="340,176 348,180 340,184" fill="#0b3d91"/>
+</svg>
+<div class="cap">Figure 2.1 — Two-plane architecture: metadata in Databricks' cloud; data in your AWS account.</div>
+</div>
+
+<h3>2.3 AWS VPC</h3>
+<table>
+  <tr><th>Option</th><th>Description</th><th>Recommended For</th></tr>
+  <tr><td>Databricks-managed VPC</td><td>Databricks provisions it</td><td>POCs, small teams</td></tr>
+  <tr><td>Customer-managed VPC (BYOVPC)</td><td>You bring your own VPC</td><td>Production / Enterprise</td></tr>
+</table>
+<p><b>Minimum VPC requirements:</b></p>
+<ul>
+  <li>Two <b>private subnets</b> in two AZs</li>
+  <li>A <b>NAT Gateway</b> (or fully air-gapped via PrivateLink)</li>
+  <li>Proper <b>route table</b></li>
+  <li>DNS resolution + DNS hostnames enabled</li>
+  <li>CIDR range from <code>/25</code> to <code>/16</code> (more IPs = larger clusters)</li>
+</ul>
+
+<h3>2.4 EC2 Compute</h3>
+<p>Clusters are EC2 instances inside your VPC. Each cluster has one <b>driver</b> and N <b>workers</b>, plus local SSD for shuffle/cache.</p>
+
+<h3>2.5 S3 Storage</h3>
+<table>
+  <tr><th>Bucket Type</th><th>Purpose</th></tr>
+  <tr><td>DBFS Root / Workspace bucket</td><td>Internal (notebook results, libs, init scripts)</td></tr>
+  <tr><td>Unity Catalog Managed Storage</td><td>UC-managed tables and volumes</td></tr>
+  <tr><td>External buckets</td><td>Bronze/Silver/Gold lakehouse data</td></tr>
+  <tr><td>Audit log bucket</td><td>Optional sink for audit log delivery</td></tr>
+</table>
+
+<h3>2.6 IAM Roles</h3>
+<table>
+  <tr><th>Role</th><th>Purpose</th></tr>
+  <tr><td>Cross-account role</td><td>Lets Databricks Control Plane manage EC2 in your account</td></tr>
+  <tr><td>Instance profile</td><td>Attached to EC2 cluster nodes for S3 access</td></tr>
+  <tr><td>UC storage credential role</td><td>Used by UC to read/write S3 data</td></tr>
+</table>
+
+<h3>2.7 Security Groups</h3>
+<ul>
+  <li><b>Inbound:</b> all TCP within the SG (intra-cluster)</li>
+  <li><b>Outbound:</b> HTTPS (443) to Databricks, STS, S3 endpoints</li>
+  <li><b>No inbound from the internet</b></li>
+</ul>
+
+<h3>2.8 Networking Cheat Sheet</h3>
+<table>
+  <tr><th>Concept</th><th>Description</th></tr>
+  <tr><td>CIDR Block</td><td>IP range (e.g., <code>10.0.0.0/16</code> = 65,536 IPs)</td></tr>
+  <tr><td>Subnet</td><td>Slice of VPC tied to a single AZ</td></tr>
+  <tr><td>NAT Gateway</td><td>Outbound-only internet for private subnets</td></tr>
+  <tr><td>VPC Endpoint (Gateway)</td><td>Private route to S3 / DynamoDB</td></tr>
+  <tr><td>VPC Endpoint (Interface)</td><td>Private route to other AWS services</td></tr>
+  <tr><td>PrivateLink</td><td>Private connection to Databricks Control Plane</td></tr>
+</table>
+
+<div class="recap">
+<b>Recap — Section 2</b>
+<ul>
+  <li>Two planes: Control (Databricks-managed) and Compute (yours).</li>
+  <li>Data stays in your S3; only commands/metadata leave.</li>
+  <li>Customer-managed VPC is the enterprise default.</li>
+  <li>IAM roles + instance profiles + security groups are foundational.</li>
+  <li>PrivateLink provides fully private control plane connectivity.</li>
+</ul>
+</div>
+</section>
+
+<!-- =============== SECTION 3 =============== -->
+<section id="s3">
+<h2>3. Workspace Administration</h2>
+
+<h3>3.1 Workspace Overview</h3>
+<p>A Databricks workspace contains notebooks, clusters, SQL warehouses, jobs, dashboards, repos, and data. A Databricks <b>account</b> can have many workspaces (Dev, QA, Prod, per-BU).</p>
+
+<h3>3.2 Account vs Workspace Console</h3>
+<table>
+  <tr><th>Console</th><th>URL Pattern</th><th>Purpose</th></tr>
+  <tr><td>Account Console</td><td><code>accounts.cloud.databricks.com</code></td><td>Workspaces, users, metastore, billing</td></tr>
+  <tr><td>Workspace Admin Settings</td><td><code>&lt;workspace-url&gt;/settings</code></td><td>Groups, cluster policies, IP lists, tokens</td></tr>
+</table>
+
+<h3>3.3 Workspace Settings to Know</h3>
+<table>
+  <tr><th>Setting</th><th>Why It Matters</th></tr>
+  <tr><td>IP access lists</td><td>Restrict workspace login to corporate IPs</td></tr>
+  <tr><td>Token management</td><td>Disable PATs or set max lifetime</td></tr>
+  <tr><td>Personal compute</td><td>Allow/disallow users to create their own clusters</td></tr>
+  <tr><td>Web terminal</td><td>Enable/disable shell-in-browser</td></tr>
+  <tr><td>Repos</td><td>Enable Git folders + allowed providers</td></tr>
+  <tr><td>Cluster log delivery</td><td>Forward driver/event logs to S3</td></tr>
+  <tr><td>Workspace tags</td><td>Default tags on billable resources</td></tr>
+</table>
+
+<h3>3.4 User Management</h3>
+<p>Users live at the <b>account level</b> and are assigned to workspaces.</p>
+<ul>
+  <li>Manual via <b>Account Console → Users → Add User</b></li>
+  <li>SCIM provisioning from your IdP (Okta, Entra ID) — <b>recommended for prod</b></li>
+</ul>
+
+<h3>3.5 Group Management — Baseline Groups</h3>
+<table>
+  <tr><th>Group</th><th>Purpose</th><th>Typical Permissions</th></tr>
+  <tr><td>account-admins</td><td>Platform admins</td><td>Full account + workspace admin</td></tr>
+  <tr><td>workspace-admins</td><td>Workspace admins</td><td>Workspace admin</td></tr>
+  <tr><td>data-engineers</td><td>ETL developers</td><td>Create clusters, manage jobs</td></tr>
+  <tr><td>data-scientists</td><td>ML practitioners</td><td>ML clusters, MLflow, serving</td></tr>
+  <tr><td>data-analysts</td><td>BI users</td><td>SQL warehouses, dashboards</td></tr>
+  <tr><td>viewers</td><td>Stakeholders</td><td>Read-only dashboards</td></tr>
+  <tr><td>service-principals-prod</td><td>Production jobs</td><td>Run-as identity for prod jobs</td></tr>
+</table>
+
+<h3>3.6 Service Principals</h3>
+<div class="tip"><b>Use service principals for all production automation.</b> They are non-human identities — not tied to an employee, easier to rotate, cleaner audit trail.</div>
+
+<h3>3.7 Workspace Access Control (ACLs)</h3>
+<table>
+  <tr><th>Permission</th><th>Description</th></tr>
+  <tr><td>NO_PERMISSIONS</td><td>No access</td></tr>
+  <tr><td>CAN_VIEW</td><td>Read-only</td></tr>
+  <tr><td>CAN_RUN</td><td>Can execute</td></tr>
+  <tr><td>CAN_EDIT</td><td>Can modify</td></tr>
+  <tr><td>CAN_MANAGE</td><td>Full control (incl. perms)</td></tr>
+  <tr><td>IS_OWNER</td><td>Object owner (jobs)</td></tr>
+</table>
+
+<div class="recap">
+<b>Recap — Section 3</b>
+<ul>
+  <li>Manage users/groups at the account level.</li>
+  <li>Grant permissions to groups, not individuals.</li>
+  <li>Use service principals for automation.</li>
+  <li>Use IP access lists and disable PATs to harden the workspace.</li>
+</ul>
+</div>
+</section>
+
+<!-- =============== SECTION 4 =============== -->
+<section id="s4">
+<h2>4. Cluster Administration</h2>
+
+<h3>4.1 Cluster Types Comparison</h3>
+<table>
+  <tr><th>Type</th><th>Persistent?</th><th>Use Case</th><th>Cost</th></tr>
+  <tr><td>All-purpose</td><td>Yes</td><td>Interactive notebooks</td><td>Higher</td></tr>
+  <tr><td>Job cluster</td><td>No (ephemeral)</td><td>Scheduled jobs</td><td>Lower</td></tr>
+  <tr><td>SQL Warehouse</td><td>Yes (warm)</td><td>BI / SQL queries</td><td>Varies</td></tr>
+  <tr><td>Serverless</td><td>Managed</td><td>Fast-start jobs, SQL, serving</td><td>Pay-per-use</td></tr>
+</table>
+
+<h3>4.2 Access Modes</h3>
+<table>
+  <tr><th>Mode</th><th>Description</th><th>UC Compatible?</th></tr>
+  <tr><td>Single User</td><td>One user attached</td><td>Yes</td></tr>
+  <tr><td>Shared</td><td>Multi-user with isolation</td><td>Yes</td></tr>
+  <tr><td>No isolation shared</td><td>Legacy</td><td>No</td></tr>
+</table>
+
+<h3>4.3 Cluster Policy Example (Standard ETL)</h3>
+<pre>{
+  "spark_version":            { "type": "regex",
+                                "pattern": "1[45]\\..*-scala2\\.12",
+                                "defaultValue": "15.4.x-scala2.12" },
+  "node_type_id":             { "type": "allowlist",
+                                "values": ["i3.xlarge","i3.2xlarge","i3.4xlarge"] },
+  "driver_node_type_id":      { "type": "fixed", "value": "i3.xlarge" },
+  "autotermination_minutes":  { "type": "range",
+                                "minValue": 10, "maxValue": 60, "defaultValue": 30 },
+  "autoscale.min_workers":    { "type": "fixed", "value": 2 },
+  "autoscale.max_workers":    { "type": "range", "maxValue": 12 },
+  "custom_tags.Environment":  { "type": "allowlist",
+                                "values": ["dev","qa","prod"] },
+  "custom_tags.CostCenter":   { "type": "regex", "pattern": "CC[0-9]{4,5}" },
+  "aws_attributes.availability":   { "type": "fixed", "value": "SPOT_WITH_FALLBACK" },
+  "aws_attributes.first_on_demand":{ "type": "fixed", "value": 1 }
+}</pre>
+
+<h3>4.4 Databricks Runtime (DBR)</h3>
+<table>
+  <tr><th>Variant</th><th>Use Case</th></tr>
+  <tr><td>Standard DBR</td><td>General Spark workloads</td></tr>
+  <tr><td>DBR ML</td><td>Pre-loaded ML libs (PyTorch, TF, MLflow)</td></tr>
+  <tr><td>DBR Photon</td><td>Vectorized C++ engine — much faster SQL/ETL</td></tr>
+  <tr><td>DBR LTS</td><td>Long-term support — use for production</td></tr>
+</table>
+<div class="tip"><b>Tip:</b> Always use an <b>LTS</b> runtime for production (e.g., <code>15.4 LTS</code>) for 2+ years of patches.</div>
+
+<h3>4.5 Autoscaling &amp; Auto-Termination</h3>
+<ul>
+  <li>Configure <code>min_workers</code> and <code>max_workers</code></li>
+  <li>Scales up within seconds when there is backlog</li>
+  <li>Scales down after a delay when idle</li>
+  <li>Set <b>auto-termination</b> to 10–30 minutes on interactive clusters</li>
+</ul>
+
+<h3>4.6 Instance Types Cheat Sheet</h3>
+<table>
+  <tr><th>Workload</th><th>EC2 Family</th><th>Why</th></tr>
+  <tr><td>General ETL</td><td>m5, m5d, m6i</td><td>Balanced CPU/RAM</td></tr>
+  <tr><td>Memory-heavy joins</td><td>r5, r6i</td><td>More RAM per vCPU</td></tr>
+  <tr><td>Compute-heavy</td><td>c5, c6i</td><td>Higher CPU</td></tr>
+  <tr><td>GPU / deep learning</td><td>g4dn, g5, p3</td><td>Attached GPU</td></tr>
+  <tr><td>Disk-cache heavy</td><td>i3, i4i</td><td>Local NVMe SSDs</td></tr>
+  <tr><td>Cost-sensitive</td><td>Any + SPOT_WITH_FALLBACK</td><td>50–70% savings</td></tr>
+</table>
+
+<h3>4.7 Cluster Cost Example</h3>
+<pre>1 driver (i3.xlarge)  = 0.75 DBU/hr x $0.55 = $0.41/hr
+4 workers (i3.xlarge) = 4 x 0.75 DBU/hr x $0.55 = $1.65/hr
+EC2 cost              = 5 x $0.31/hr = $1.55/hr
+-------------------------------------------------------
+Total per running hour ~ $3.61
+8 hrs/day x 22 days   ~ $635/month
+Auto-term + spot can cut by 50-80%.</pre>
+
+<h3>4.8 Cluster Best Practices</h3>
+<ul>
+  <li>Use cluster policies for governance</li>
+  <li>Use job clusters for production</li>
+  <li>Auto-terminate interactive clusters</li>
+  <li>Enable autoscaling</li>
+  <li>Spot instances for non-critical workloads</li>
+  <li>Photon for SQL/ETL</li>
+  <li>Tag everything</li>
+  <li>Pin approved DBR LTS versions</li>
+</ul>
+
+<div class="recap">
+<b>Recap — Section 4</b>
+<ul>
+  <li>All-purpose = interactive, Job = production.</li>
+  <li>Policies enforce standards and control cost.</li>
+  <li>Photon + autoscaling + spot = magic cost/perf trio.</li>
+  <li>Always set auto-termination.</li>
+</ul>
+</div>
+</section>
+
+<!-- =============== SECTION 5 =============== -->
+<section id="s5">
+<h2>5. Unity Catalog Administration</h2>
+
+<h3>5.1 What is Unity Catalog?</h3>
+<p>Unity Catalog (UC) is the unified governance solution for all data and AI assets in Databricks. It provides:</p>
+<ul>
+  <li>Centralized access control across all workspaces in a region</li>
+  <li>Fine-grained permissions (table, column, row, view)</li>
+  <li>Automatic data lineage</li>
+  <li>Data discovery + search</li>
+  <li>Built-in auditing</li>
+  <li>Native Delta Sharing</li>
+  <li>Governance for ML features and models</li>
+</ul>
+
+<h3>5.2 Unity Catalog Hierarchy</h3>
+
+<div class="diagram">
+<svg width="640" height="240" viewBox="0 0 640 240" xmlns="http://www.w3.org/2000/svg">
+  <style>
+    .lbl{font-family:Segoe UI;font-size:11px;fill:#fff;font-weight:bold;}
+    .sub{font-family:Segoe UI;font-size:9.5px;fill:#475569;}
+  </style>
+  <rect x="220" y="20" width="200" height="40" rx="6" fill="#7c3aed"/>
+  <text x="320" y="46" text-anchor="middle" class="lbl">Metastore (1 per region)</text>
+
+  <rect x="170" y="80" width="140" height="35" rx="5" fill="#0b3d91"/>
+  <text x="240" y="103" text-anchor="middle" class="lbl">Catalog: dev</text>
+  <rect x="330" y="80" width="140" height="35" rx="5" fill="#0b3d91"/>
+  <text x="400" y="103" text-anchor="middle" class="lbl">Catalog: prod</text>
+
+  <rect x="170" y="130" width="140" height="30" rx="5" fill="#0ea5e9"/>
+  <text x="240" y="151" text-anchor="middle" class="lbl">Schema: sales</text>
+  <rect x="330" y="130" width="140" height="30" rx="5" fill="#0ea5e9"/>
+  <text x="400" y="151" text-anchor="middle" class="lbl">Schema: finance</text>
+
+  <rect x="100" y="175" width="100" height="30" rx="5" fill="#10b981"/>
+  <text x="150" y="195" text-anchor="middle" class="lbl">Tables</text>
+  <rect x="210" y="175" width="100" height="30" rx="5" fill="#10b981"/>
+  <text x="260" y="195" text-anchor="middle" class="lbl">Views</text>
+  <rect x="320" y="175" width="100" height="30" rx="5" fill="#10b981"/>
+  <text x="370" y="195" text-anchor="middle" class="lbl">Volumes</text>
+  <rect x="430" y="175" width="100" height="30" rx="5" fill="#10b981"/>
+  <text x="480" y="195" text-anchor="middle" class="lbl">Functions</text>
+
+  <line x1="320" y1="60" x2="240" y2="80" stroke="#475569" stroke-width="1.5"/>
+  <line x1="320" y1="60" x2="400" y2="80" stroke="#475569" stroke-width="1.5"/>
+  <line x1="240" y1="115" x2="240" y2="130" stroke="#475569" stroke-width="1.5"/>
+  <line x1="400" y1="115" x2="400" y2="130" stroke="#475569" stroke-width="1.5"/>
+  <line x1="240" y1="160" x2="150" y2="175" stroke="#475569" stroke-width="1"/>
+  <line x1="240" y1="160" x2="260" y2="175" stroke="#475569" stroke-width="1"/>
+  <line x1="400" y1="160" x2="370" y2="175" stroke="#475569" stroke-width="1"/>
+  <line x1="400" y1="160" x2="480" y2="175" stroke="#475569" stroke-width="1"/>
+
+  <text x="320" y="230" text-anchor="middle" class="sub">Three-level namespace: catalog.schema.table</text>
+</svg>
+<div class="cap">Figure 5.1 — Unity Catalog hierarchy</div>
+</div>
+
+<h3>5.3 Metastore, Catalog, Schema</h3>
+<ul>
+  <li><b>Metastore</b>: top-level container. One per region (recommended).</li>
+  <li><b>Catalog</b>: groups schemas. Common patterns: <code>dev</code>/<code>qa</code>/<code>prod</code> or by domain.</li>
+  <li><b>Schema</b>: logical grouping of tables, views, volumes, functions.</li>
+</ul>
+
+<h3>5.4 Tables, Views, Volumes</h3>
+<table>
+  <tr><th>Type</th><th>Description</th><th>When to Use</th></tr>
+  <tr><td>Managed Table</td><td>Data + metadata managed by UC</td><td>Default — recommended</td></tr>
+  <tr><td>External Table</td><td>Metadata in UC, data in external S3</td><td>Existing data / multi-engine</td></tr>
+  <tr><td>View</td><td>Logical query</td><td>Abstraction, RLS/CLS</td></tr>
+  <tr><td>Materialized View</td><td>Pre-computed view (incremental)</td><td>Performance</td></tr>
+  <tr><td>Streaming Table</td><td>From DLT</td><td>Streaming ingest</td></tr>
+  <tr><td>Volume</td><td>Non-tabular files</td><td>PDFs, images, ML data</td></tr>
+</table>
+
+<h3>5.5 External Locations &amp; Storage Credentials</h3>
+<pre>CREATE STORAGE CREDENTIAL my_storage_cred
+  WITH (AWS_IAM_ROLE 'arn:aws:iam::123456789012:role/uc-storage-role')
+  COMMENT 'Role used by UC to access prod S3';
+
+CREATE EXTERNAL LOCATION sales_ext
+  URL 's3://mycompany-sales-prod/'
+  WITH (STORAGE CREDENTIAL my_storage_cred)
+  COMMENT 'Sales data lake';
+
+GRANT READ FILES, WRITE FILES
+  ON EXTERNAL LOCATION sales_ext TO `data-engineers`;</pre>
+
+<h3>5.6 Grants — Full SQL Reference</h3>
+<pre>-- Catalog and schema access
+GRANT USE CATALOG ON CATALOG prod              TO `data-analysts`;
+GRANT USE SCHEMA  ON SCHEMA  prod.sales        TO `data-analysts`;
+
+-- Table-level
+GRANT SELECT ON TABLE  prod.sales.customers    TO `data-analysts`;
+GRANT SELECT ON SCHEMA prod.sales              TO `data-analysts`;
+GRANT MODIFY ON TABLE  prod.sales.customers    TO `data-engineers`;
+
+-- Volumes / external locations
+GRANT READ VOLUME, WRITE VOLUME
+  ON VOLUME prod.ml.training_data              TO `ml-team`;
+GRANT READ FILES, WRITE FILES
+  ON EXTERNAL LOCATION sales_ext               TO `data-engineers`;
+
+-- Revoke
+REVOKE SELECT ON TABLE prod.sales.customers FROM `data-analysts`;
+
+-- Inspect
+SHOW GRANTS ON TABLE prod.sales.customers;</pre>
+
+<h3>5.7 Row- and Column-Level Security</h3>
+<pre>-- Column masking
+CREATE FUNCTION mask_email(email STRING)
+RETURNS STRING
+RETURN CASE
+  WHEN is_account_group_member('pii-readers') THEN email
+  ELSE regexp_replace(email, '(^.)(.*)(@.*)', '$1***$3')
+END;
+
+ALTER TABLE prod.sales.customers
+  ALTER COLUMN email SET MASK mask_email;
+
+-- Row filter
+CREATE FUNCTION us_only_filter(region STRING)
+RETURNS BOOLEAN
+RETURN region = 'US' OR is_account_group_member('global-readers');
+
+ALTER TABLE prod.sales.customers
+  SET ROW FILTER us_only_filter ON (region);</pre>
+
+<h3>5.8 Data Lineage</h3>
+<p>Unity Catalog automatically tracks lineage between tables, notebooks, jobs, dashboards — including <b>column-level lineage</b> for SQL transformations. Visualize in Catalog Explorer → Lineage tab.</p>
+
+<h3>5.9 Governance Best Practices</h3>
+<ul>
+  <li>One metastore per region</li>
+  <li>Separate catalogs per environment</li>
+  <li>Grant to <b>groups</b>, not users</li>
+  <li>Use <b>service principals</b> for prod pipelines</li>
+  <li>Use external locations, not legacy mounts</li>
+  <li>Enable <code>system.access.audit</code> and <code>system.billing.usage</code></li>
+  <li>Document each catalog/schema with <code>COMMENT</code></li>
+</ul>
+
+<div class="recap">
+<b>Recap — Section 5</b>
+<ul>
+  <li>UC = modern, unified governance.</li>
+  <li>3-level namespace: <code>catalog.schema.table</code>.</li>
+  <li>External locations + storage credentials replace legacy mounts.</li>
+  <li>Lineage + audit + column/row masking are built in.</li>
+</ul>
+</div>
+</section>
+
+<!-- =============== SECTION 6 =============== -->
+<section id="s6">
+<h2>6. Security Administration</h2>
+
+<h3>6.1 Authentication Methods</h3>
+<table>
+  <tr><th>Method</th><th>Use Case</th></tr>
+  <tr><td>SSO (SAML / OIDC)</td><td>All human users</td></tr>
+  <tr><td>OAuth tokens</td><td>Modern API access</td></tr>
+  <tr><td>PAT</td><td>Legacy API access — avoid</td></tr>
+  <tr><td>Service Principal OAuth</td><td>Automation, jobs, CI/CD</td></tr>
+</table>
+
+<h3>6.2 Authorization Layers</h3>
+<ul>
+  <li>Workspace ACLs (notebooks, clusters, jobs)</li>
+  <li>Unity Catalog grants (data)</li>
+  <li>Cluster policies (compute)</li>
+  <li>IAM roles (AWS-side)</li>
+</ul>
+
+<h3>6.3 SSO (Single Sign-On)</h3>
+<table>
+  <tr><th>IdP</th><th>Protocol</th></tr>
+  <tr><td>Okta</td><td>SAML 2.0 / OIDC</td></tr>
+  <tr><td>Microsoft Entra ID</td><td>SAML 2.0 / OIDC</td></tr>
+  <tr><td>OneLogin / Ping</td><td>SAML 2.0</td></tr>
+  <tr><td>Google Workspace</td><td>SAML 2.0</td></tr>
+</table>
+
+<h3>6.4 SCIM Provisioning</h3>
+<table>
+  <tr><th>IdP Action</th><th>Databricks Effect</th></tr>
+  <tr><td>New employee created</td><td>User auto-provisioned</td></tr>
+  <tr><td>Group change</td><td>Groups synced</td></tr>
+  <tr><td>Employee deactivated</td><td>User auto-disabled</td></tr>
+</table>
+
+<h3>6.5 Secret Scopes</h3>
+<table>
+  <tr><th>Backend</th><th>Description</th><th>Recommended</th></tr>
+  <tr><td>Databricks-backed</td><td>DB-managed encrypted store</td><td>Quick start</td></tr>
+  <tr><td>AWS Secrets Manager-backed</td><td>Stored in AWS</td><td>Enterprise</td></tr>
+</table>
+<pre>databricks secrets create-scope my-scope
+databricks secrets put-secret my-scope db-password --string-value "MyP@ss123"
+
+# In a notebook:
+password = dbutils.secrets.get(scope="my-scope", key="db-password")</pre>
+
+<h3>6.6 Network Security Controls</h3>
+<table>
+  <tr><th>Control</th><th>What It Does</th></tr>
+  <tr><td>IP access list</td><td>Restrict workspace login to corporate IPs</td></tr>
+  <tr><td>PrivateLink (front-end)</td><td>Users access workspace privately</td></tr>
+  <tr><td>PrivateLink (back-end)</td><td>Private compute ↔ control plane</td></tr>
+  <tr><td>No public IPs on clusters</td><td>Cluster nodes are private only</td></tr>
+  <tr><td>VPC endpoints</td><td>Private S3, STS, Kinesis</td></tr>
+</table>
+
+<h3>6.7 Encryption</h3>
+<table>
+  <tr><th>Layer</th><th>Mechanism</th></tr>
+  <tr><td>Data at rest (S3)</td><td>SSE-S3 or SSE-KMS (CMK recommended)</td></tr>
+  <tr><td>Data in transit</td><td>TLS 1.2+ (always)</td></tr>
+  <tr><td>DBFS root</td><td>SSE-KMS with optional CMK</td></tr>
+  <tr><td>Cluster local SSD</td><td>EC2 default encryption</td></tr>
+  <tr><td>Secrets</td><td>Encrypted at rest in scope backend</td></tr>
+</table>
+
+<h3>6.8 Audit Logs</h3>
+<p>Configure audit log delivery to an S3 bucket. Logs capture logins, cluster lifecycle, notebook commands, permission changes, UC ops, job runs. Ship to a SIEM (Splunk, Datadog) with ≥ 1-year retention. You can also query <code>system.access.audit</code>.</p>
+
+<h3>6.9 Security Best Practices</h3>
+<ul>
+  <li>Enforce SSO + MFA</li>
+  <li>Enable SCIM for lifecycle</li>
+  <li>Use service principals for production</li>
+  <li>Disable / limit PATs</li>
+  <li>Enable IP access lists</li>
+  <li>Use PrivateLink (front-end + back-end)</li>
+  <li>Customer-managed VPC + KMS CMK</li>
+  <li>Secrets in AWS Secrets Manager-backed scopes</li>
+  <li>Ship audit logs to SIEM</li>
+  <li>Apply least privilege in UC grants</li>
+</ul>
+
+<div class="recap">
+<b>Recap — Section 6</b>
+<ul>
+  <li>Auth = who; Authz = what.</li>
+  <li>SSO + SCIM is non-negotiable for enterprise.</li>
+  <li>PrivateLink + customer VPC + CMK = enterprise-grade isolation.</li>
+  <li>Audit logs must be enabled from day one.</li>
+</ul>
+</div>
+</section>
+
+<!-- =============== SECTION 7 =============== -->
+<section id="s7">
+<h2>7. Jobs and Workflow Administration</h2>
+
+<h3>7.1 What is a Databricks Job?</h3>
+<p>Non-interactive code execution. Triggers: scheduled (cron), manual, file arrival in S3, REST API, continuous (streaming).</p>
+
+<h3>7.2 Workflows (DAGs)</h3>
+<div class="diagram">
+<svg width="640" height="200" viewBox="0 0 640 200" xmlns="http://www.w3.org/2000/svg">
+  <style>
+    .lbl{font-family:Segoe UI;font-size:11px;fill:#fff;font-weight:bold;}
+    .sub{font-family:Segoe UI;font-size:10px;fill:#475569;}
+  </style>
+  <rect x="20"  y="80" width="120" height="40" rx="6" fill="#a16207"/>
+  <text x="80"  y="105" text-anchor="middle" class="lbl">Ingest Bronze</text>
+  <rect x="180" y="80" width="120" height="40" rx="6" fill="#94a3b8"/>
+  <text x="240" y="105" text-anchor="middle" class="lbl">Transform Silver</text>
+  <rect x="340" y="80" width="120" height="40" rx="6" fill="#ca8a04"/>
+  <text x="400" y="105" text-anchor="middle" class="lbl">Aggregate Gold</text>
+  <rect x="500" y="80" width="120" height="40" rx="6" fill="#0ea5e9"/>
+  <text x="560" y="105" text-anchor="middle" class="lbl">Refresh Dashboard</text>
+
+  <rect x="180" y="150" width="120" height="35" rx="6" fill="#10b981"/>
+  <text x="240" y="172" text-anchor="middle" class="lbl">Data Quality</text>
+
+  <line x1="140" y1="100" x2="180" y2="100" stroke="#475569" stroke-width="2" marker-end="url(#arr)"/>
+  <line x1="300" y1="100" x2="340" y2="100" stroke="#475569" stroke-width="2" marker-end="url(#arr)"/>
+  <line x1="460" y1="100" x2="500" y2="100" stroke="#475569" stroke-width="2" marker-end="url(#arr)"/>
+  <line x1="240" y1="120" x2="240" y2="150" stroke="#475569" stroke-width="2" marker-end="url(#arr)"/>
+
+  <defs>
+    <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+      <polygon points="0 0, 8 4, 0 8" fill="#475569"/>
+    </marker>
+  </defs>
+</svg>
+<div class="cap">Figure 7.1 — Multi-task workflow with branching</div>
+</div>
+
+<h3>7.3 Job Cluster Choice</h3>
+<table>
+  <tr><th>Choice</th><th>Pros</th><th>Cons</th></tr>
+  <tr><td>New job cluster per run</td><td>Isolation, cheaper</td><td>Slower start</td></tr>
+  <tr><td>Shared job cluster</td><td>Reused across tasks</td><td>Less isolation</td></tr>
+  <tr><td>All-purpose</td><td>Fast start</td><td>Expensive, contention</td></tr>
+</table>
+
+<h3>7.4 Cron Reference</h3>
+<table>
+  <tr><th>Cron</th><th>Meaning</th></tr>
+  <tr><td><code>0 0 * * * ?</code></td><td>Hourly</td></tr>
+  <tr><td><code>0 0 0 * * ?</code></td><td>Daily at midnight UTC</td></tr>
+  <tr><td><code>0 0 6 ? * MON-FRI</code></td><td>6 AM weekdays</td></tr>
+  <tr><td><code>0 */15 * * * ?</code></td><td>Every 15 min</td></tr>
+  <tr><td><code>0 0 0 1 * ?</code></td><td>First of month</td></tr>
+</table>
+
+<h3>7.5 Retries, Alerts, Permissions</h3>
+<ul>
+  <li>Max retries: 2; Min retry interval: 5 min; Timeout: 1.5× expected</li>
+  <li>Notifications: Email + Slack/Teams on failure</li>
+  <li>Set the <b>owner</b> of production jobs to a <b>service principal</b></li>
+</ul>
+
+<div class="recap">
+<b>Recap — Section 7</b>
+<ul>
+  <li>Use workflows for multi-step orchestration.</li>
+  <li>Use job clusters + SP owners for production.</li>
+  <li>Configure retries, timeouts, and failure alerts.</li>
+  <li>Monitor DBU consumption per job.</li>
+</ul>
+</div>
+</section>
+
+<!-- =============== SECTION 8 =============== -->
+<section id="s8">
+<h2>8. Databricks SQL Administration</h2>
+
+<h3>8.1 SQL Warehouse Types</h3>
+<table>
+  <tr><th>Type</th><th>Runs In</th><th>Photon</th><th>Startup</th></tr>
+  <tr><td>Classic</td><td>Your AWS</td><td>Optional</td><td>Minutes</td></tr>
+  <tr><td>Pro</td><td>Your AWS</td><td>Yes</td><td>Minutes</td></tr>
+  <tr><td>Serverless</td><td>Databricks</td><td>Yes</td><td>Seconds</td></tr>
+</table>
+<div class="tip"><b>Recommended:</b> Serverless SQL for most BI workloads.</div>
+
+<h3>8.2 Warehouse Sizing</h3>
+<table>
+  <tr><th>Size</th><th>DBU/hr</th><th>Use Case</th></tr>
+  <tr><td>2X-Small</td><td>8</td><td>Light / dev</td></tr>
+  <tr><td>X-Small</td><td>12</td><td>Single analyst</td></tr>
+  <tr><td>Small</td><td>24</td><td>Small team BI</td></tr>
+  <tr><td>Medium</td><td>40</td><td>Team-level BI</td></tr>
+  <tr><td>Large</td><td>80</td><td>High concurrency</td></tr>
+  <tr><td>X-Large</td><td>160</td><td>Enterprise BI</td></tr>
+  <tr><td>2X – 4X-Large</td><td>320 – 640</td><td>Massive concurrency</td></tr>
+</table>
+
+<h3>8.3 Permissions, Query History, Dashboards</h3>
+<table>
+  <tr><th>Permission</th><th>What It Allows</th></tr>
+  <tr><td>CAN_USE</td><td>Run queries</td></tr>
+  <tr><td>CAN_MANAGE</td><td>Edit warehouse settings</td></tr>
+  <tr><td>CAN_MONITOR</td><td>View query history</td></tr>
+</table>
+<p>Use Query History to find slow/expensive queries. Build dashboards on SQL queries with scheduled refresh and alerts.</p>
+
+<div class="recap">
+<b>Recap — Section 8</b>
+<ul>
+  <li>Serverless SQL = fastest, simplest, recommended.</li>
+  <li>Size by concurrency, not data volume.</li>
+  <li>Monitor query history weekly.</li>
+</ul>
+</div>
+</section>
+
+<!-- =============== SECTION 9 =============== -->
+<section id="s9">
+<h2>9. Monitoring and Cost Optimization</h2>
+
+<h3>9.1 What to Monitor</h3>
+<table>
+  <tr><th>Area</th><th>Key Metric</th></tr>
+  <tr><td>Compute</td><td>DBU/hour by cluster, warehouse</td></tr>
+  <tr><td>Jobs</td><td>Success rate, duration, cost per run</td></tr>
+  <tr><td>Storage</td><td>S3 size, table growth, file count</td></tr>
+  <tr><td>Users</td><td>Active users, idle clusters</td></tr>
+  <tr><td>Security</td><td>Failed logins, permission changes</td></tr>
+</table>
+
+<h3>9.2 System Tables</h3>
+<table>
+  <tr><th>Table</th><th>Purpose</th></tr>
+  <tr><td><code>system.billing.usage</code></td><td>Per-resource DBU usage</td></tr>
+  <tr><td><code>system.access.audit</code></td><td>Audit records</td></tr>
+  <tr><td><code>system.access.table_lineage</code></td><td>Lineage records</td></tr>
+  <tr><td><code>system.compute.clusters</code></td><td>Cluster inventory</td></tr>
+  <tr><td><code>system.compute.warehouses</code></td><td>Warehouse inventory</td></tr>
+</table>
+
+<pre>SELECT workspace_id, sku_name,
+       SUM(usage_quantity) AS dbus,
+       SUM(usage_quantity) * 0.55 AS approx_usd
+FROM system.billing.usage
+WHERE usage_date >= current_date() - INTERVAL 30 DAYS
+GROUP BY 1, 2
+ORDER BY dbus DESC;</pre>
+
+<h3>9.3 Tags for Cost Attribution</h3>
+<table>
+  <tr><th>Tag</th><th>Example</th></tr>
+  <tr><td>Environment</td><td>prod, dev, qa</td></tr>
+  <tr><td>Team</td><td>data-eng, data-sci, bi</td></tr>
+  <tr><td>Project</td><td>salesforce-pipeline</td></tr>
+  <tr><td>CostCenter</td><td>CC12345</td></tr>
+  <tr><td>Owner</td><td>john.doe@company.com</td></tr>
+</table>
+
+<h3>9.4 Cost Optimization Playbook</h3>
+<table>
+  <tr><th>Lever</th><th>Savings</th></tr>
+  <tr><td>Auto-termination on interactive clusters</td><td>30–60%</td></tr>
+  <tr><td>Switch jobs from all-purpose to job clusters</td><td>40–70%</td></tr>
+  <tr><td>Enable Photon</td><td>30–50% (also faster)</td></tr>
+  <tr><td>Spot instances (SPOT_WITH_FALLBACK)</td><td>50–70% EC2</td></tr>
+  <tr><td>Switch BI to Serverless SQL</td><td>Lower idle cost</td></tr>
+  <tr><td>Right-size warehouses</td><td>20–40%</td></tr>
+  <tr><td>OPTIMIZE/VACUUM Delta tables</td><td>10–30%</td></tr>
+</table>
+
+<h3>9.5 Performance Quick Wins</h3>
+<ul>
+  <li><code>OPTIMIZE table ZORDER BY (col)</code> weekly on hot tables</li>
+  <li><code>VACUUM</code> to remove stale files</li>
+  <li>Partition only when partitions are large (≥ 1 GB)</li>
+  <li>Use <b>liquid clustering</b> for new tables</li>
+  <li>Enable Photon</li>
+  <li>Fix small-files problem with OPTIMIZE / auto-compaction</li>
+</ul>
+
+<div class="recap">
+<b>Recap — Section 9</b>
+<ul>
+  <li>Tag everything; use system tables for FinOps.</li>
+  <li>Auto-term + job clusters + Photon + spot = biggest wins.</li>
+  <li>Run OPTIMIZE/VACUUM regularly.</li>
+</ul>
+</div>
+</section>
+
+<!-- =============== SECTION 10 =============== -->
+<section id="s10">
+<h2>10. Databricks CLI and Automation</h2>
+
+<h3>10.1 Install &amp; Authenticate</h3>
+<pre># macOS / Linux
+brew tap databricks/tap && brew install databricks
+
+# Windows
+winget install Databricks.DatabricksCLI
+
+# Configure (OAuth recommended)
+databricks auth login --host https://abc.cloud.databricks.com
+
+# OR profile with token
+databricks configure --host https://abc.cloud.databricks.com --token</pre>
+
+<h3>10.2 Common Commands</h3>
+<pre># Workspace
+databricks workspace list /
+databricks workspace import-dir ./notebooks /Workspace/Users/me
+
+# Clusters
+databricks clusters list
+databricks clusters create --json @cluster.json
+databricks clusters terminate &lt;cluster-id&gt;
+
+# Jobs
+databricks jobs list
+databricks jobs run-now &lt;job-id&gt;
+
+# Unity Catalog
+databricks catalogs list
+databricks schemas list --catalog-name prod
+databricks tables list --catalog-name prod --schema-name sales
+databricks grants get table prod.sales.customers
+
+# Secrets
+databricks secrets put-secret my-scope db-password</pre>
+
+<h3>10.3 Terraform — Minimal Stack</h3>
+<pre>terraform {
+  required_providers {
+    databricks = { source = "databricks/databricks", version = "~> 1.50" }
+  }
+}
+
+provider "databricks" {
+  host  = var.databricks_host
+  token = var.databricks_token
+}
+
+resource "databricks_group" "engineers" {
+  display_name = "data-engineers"
+}
+
+resource "databricks_cluster_policy" "etl" {
+  name       = "etl-policy"
+  definition = jsonencode({
+    "spark_version"          : { "type": "fixed", "value": "15.4.x-scala2.12" },
+    "node_type_id"           : { "type": "allowlist", "values": ["i3.xlarge"] },
+    "autotermination_minutes": { "type": "fixed", "value": 30 },
+    "autoscale.min_workers"  : { "type": "fixed", "value": 2 },
+    "autoscale.max_workers"  : { "type": "range", "maxValue": 8 }
+  })
+}
+
+resource "databricks_permissions" "etl_policy" {
+  cluster_policy_id = databricks_cluster_policy.etl.id
+  access_control {
+    group_name       = databricks_group.engineers.display_name
+    permission_level = "CAN_USE"
+  }
+}
+
+resource "databricks_catalog" "prod" { name = "prod" }
+
+resource "databricks_grants" "prod_catalog" {
+  catalog = databricks_catalog.prod.name
+  grant {
+    principal  = databricks_group.engineers.display_name
+    privileges = ["USE_CATALOG"]
+  }
+}</pre>
+
+<h3>10.4 CI/CD with Databricks Asset Bundles (DABs)</h3>
+<div class="pre-ascii">[Git push]
+   |
+   v
+[GitHub Actions / Jenkins]
+   |--> databricks bundle validate
+   |--> databricks bundle deploy -t dev
+   |--> run smoke tests
+   |--> databricks bundle deploy -t prod  (manual approval)</div>
+
+<h3>10.5 Automation Use Cases</h3>
+<table>
+  <tr><th>Use Case</th><th>Tool</th></tr>
+  <tr><td>Provision workspaces / metastores</td><td>Terraform</td></tr>
+  <tr><td>Onboard users + groups</td><td>SCIM + Terraform</td></tr>
+  <tr><td>Deploy notebooks &amp; jobs</td><td>DABs + GitHub Actions</td></tr>
+  <tr><td>Rotate secrets</td><td>CLI + AWS Secrets Manager</td></tr>
+  <tr><td>Apply cluster policies</td><td>Terraform</td></tr>
+  <tr><td>Manage UC grants at scale</td><td>Terraform <code>databricks_grants</code></td></tr>
+</table>
+
+<div class="recap">
+<b>Recap — Section 10</b>
+<ul>
+  <li>CLI for ad-hoc; Terraform for production.</li>
+  <li>DABs for CI/CD of notebooks + jobs.</li>
+  <li>IaC reduces human error and adds audit trail.</li>
+</ul>
+</div>
+</section>
+
+<!-- =============== SECTION 11 =============== -->
+<section id="s11">
+<h2>11. Hands-on Labs</h2>
+
+<div class="lab">
+<div class="lab-title">Lab 1 — Explore the Databricks Workspace</div>
+<b>Objective:</b> Get oriented with the Databricks UI.
+<ol>
+  <li>Log in to your workspace.</li>
+  <li>Locate each sidebar item: Workspace, Catalog, Workflows, SQL, Compute, Settings.</li>
+  <li>Open <b>Settings → Admin Console</b> and explore each tab.</li>
+  <li>Open the <b>Account Console</b> (<code>accounts.cloud.databricks.com</code>) and observe workspaces + metastore.</li>
+</ol>
+<b>Deliverable:</b> A 3–5 line note comparing the workspace vs account console.
+</div>
+
+<div class="lab">
+<div class="lab-title">Lab 2 — Create Users and Groups</div>
+<b>Objective:</b> Practice user lifecycle management.
+<ol>
+  <li>In the Account Console, go to <b>User management</b>.</li>
+  <li>Add user <code>student1@yourcompany.com</code>.</li>
+  <li>Create group <code>lab-data-engineers</code>.</li>
+  <li>Add <code>student1</code> to the group.</li>
+  <li>Assign the group to your lab workspace.</li>
+</ol>
+<b>Deliverable:</b> Screenshot of created user and group.
+</div>
+
+<div class="lab">
+<div class="lab-title">Lab 3 — Create a Cluster</div>
+<b>Objective:</b> Provision your first cluster.
+<ol>
+  <li><b>Compute → Create Cluster</b></li>
+  <li>Name <code>lab-cluster</code>, Single user, DBR 15.4 LTS, <code>m5.large</code>, autoscale 1–3, auto-term 15 min.</li>
+  <li>Create the cluster.</li>
+  <li>Attach a notebook and run:
+<pre>print("Hello, Databricks!")
+spark.range(10).display()</pre></li>
+</ol>
+<b>Deliverable:</b> Screenshot of running cluster + notebook output.
+</div>
+
+<div class="lab">
+<div class="lab-title">Lab 4 — Create a Cluster Policy</div>
+<b>Objective:</b> Enforce governance.
+<ol>
+  <li><b>Admin Console → Cluster policies → Create policy</b></li>
+  <li>Paste:
+<pre>{
+  "spark_version":           { "type": "fixed",     "value": "15.4.x-scala2.12" },
+  "node_type_id":            { "type": "allowlist", "values": ["m5.large","m5.xlarge"] },
+  "autotermination_minutes": { "type": "fixed",     "value": 15 },
+  "num_workers":             { "type": "range",     "minValue": 1, "maxValue": 4 },
+  "custom_tags.Environment": { "type": "fixed",     "value": "lab" }
+}</pre></li>
+  <li>Save as <code>lab-policy</code> and grant <code>CAN_USE</code> to <code>lab-data-engineers</code>.</li>
+  <li>Sign in as <code>student1</code> and try to create a cluster — observe restrictions.</li>
+</ol>
+<b>Deliverable:</b> Screenshot of restricted cluster create page.
+</div>
+
+<div class="lab">
+<div class="lab-title">Lab 5 — Create Unity Catalog Objects</div>
+<b>Objective:</b> Practice creating UC objects.
+<pre>CREATE CATALOG IF NOT EXISTS lab_catalog COMMENT 'Lab catalog for training';
+USE CATALOG lab_catalog;
+CREATE SCHEMA IF NOT EXISTS lab_schema;
+USE SCHEMA lab_schema;
+
+CREATE TABLE customers (
+  id INT, name STRING, city STRING, signup_date DATE
+);
+
+INSERT INTO customers VALUES
+  (1, 'Alice',   'New York', DATE'2024-01-15'),
+  (2, 'Bob',     'Chicago',  DATE'2024-02-10'),
+  (3, 'Charlie', 'Seattle',  DATE'2024-03-22');
+
+SELECT * FROM customers;</pre>
+<b>Deliverable:</b> Output of the SELECT.
+</div>
+
+<div class="lab">
+<div class="lab-title">Lab 6 — Assign Permissions</div>
+<b>Objective:</b> Practice UC grants.
+<pre>GRANT USE CATALOG ON CATALOG lab_catalog                      TO `lab-data-engineers`;
+GRANT USE SCHEMA  ON SCHEMA  lab_catalog.lab_schema           TO `lab-data-engineers`;
+GRANT SELECT      ON TABLE   lab_catalog.lab_schema.customers TO `lab-data-engineers`;
+
+SHOW GRANTS ON TABLE lab_catalog.lab_schema.customers;</pre>
+<b>Validation:</b> Sign in as <code>student1</code>. Confirm SELECT works and INSERT fails.<br>
+<b>Deliverable:</b> Output of SHOW GRANTS.
+</div>
+
+<div class="lab">
+<div class="lab-title">Lab 7 — Create and Schedule a Job</div>
+<b>Objective:</b> Build a scheduled workflow.
+<ol>
+  <li><b>Workflows → Create Job</b></li>
+  <li>Name <code>daily-customer-load</code>, task type Notebook, simple ETL notebook on <code>lab_schema.customers</code>.</li>
+  <li>Cluster: New job cluster, m5.large, 1 worker, DBR 15.4 LTS.</li>
+  <li>Schedule <code>0 0 8 * * ?</code> (8 AM UTC daily).</li>
+  <li>Email on failure.</li>
+  <li>Save and click <b>Run now</b>.</li>
+</ol>
+<b>Deliverable:</b> Screenshot of successful job run.
+</div>
+
+<div class="lab">
+<div class="lab-title">Lab 8 — Monitor Cluster Cost and Usage</div>
+<b>Objective:</b> Use built-in monitoring.
+<ol>
+  <li><b>Account Console → Usage</b></li>
+  <li>Filter by last 7 days, your workspace, tag <code>Environment=lab</code>.</li>
+  <li>Identify the most expensive cluster.</li>
+  <li>(Optional) Run:
+<pre>SELECT cluster_id, sku_name, SUM(usage_quantity) AS dbus
+FROM system.billing.usage
+WHERE usage_date >= current_date() - INTERVAL 7 DAYS
+GROUP BY 1, 2
+ORDER BY dbus DESC
+LIMIT 10;</pre></li>
+</ol>
+<b>Deliverable:</b> 1-page report with findings + 2 cost optimization recommendations.
+</div>
+
+</section>
+
+<!-- =============== SECTION 12 =============== -->
+<section id="s12">
+<h2>12. Admin Best Practices</h2>
+
+<h3>12.1 Security</h3>
+<ul>
+  <li>Enforce SSO + MFA</li>
+  <li>SCIM for lifecycle automation</li>
+  <li>Service principals for production</li>
+  <li>IP access lists + PrivateLink</li>
+  <li>Customer VPC + KMS CMK</li>
+  <li>AWS Secrets Manager-backed scopes</li>
+  <li>Disable / strictly limit PATs</li>
+  <li>Audit logs → SIEM, ≥ 1-year retention</li>
+  <li>Least privilege in all UC grants</li>
+</ul>
+
+<h3>12.2 Cost Optimization</h3>
+<ul>
+  <li>Photon for SQL/ETL</li>
+  <li>Job clusters for scheduled jobs</li>
+  <li>Auto-termination 10–30 min on interactive</li>
+  <li>Tag every cluster, job, warehouse</li>
+  <li>Cluster policies to cap instance size</li>
+  <li>Spot instances for non-critical workloads</li>
+  <li>Serverless SQL for BI</li>
+  <li>Weekly usage review + budget alerts</li>
+</ul>
+
+<h3>12.3 Governance</h3>
+<ul>
+  <li>One metastore per region</li>
+  <li>Catalog per environment</li>
+  <li>External locations, not mounts</li>
+  <li>Grant to groups, not users</li>
+  <li>Column- / row-level security as needed</li>
+  <li>Track lineage for compliance</li>
+  <li>Enforce naming conventions</li>
+</ul>
+
+<h3>12.4 Performance</h3>
+<ul>
+  <li>Photon-enabled clusters</li>
+  <li>Proper partitioning or liquid clustering</li>
+  <li>OPTIMIZE + VACUUM regularly</li>
+  <li>Autoscaling</li>
+  <li>Delta cache (i3 instances)</li>
+  <li>Right-size instance types</li>
+</ul>
+
+<h3>12.5 Operations</h3>
+<ul>
+  <li>IaC (Terraform) from day one</li>
+  <li>DABs for CI/CD</li>
+  <li>Incident runbook</li>
+  <li>Documented on-call rotation</li>
+  <li>Quarterly access reviews</li>
+  <li>Monthly review of abandoned resources</li>
+</ul>
+</section>
+
+<!-- =============== SECTION 13 =============== -->
+<section id="s13">
+<h2>13. Troubleshooting Quick Reference</h2>
+<table>
+  <tr><th>Symptom</th><th>Likely Cause</th><th>Fix</th></tr>
+  <tr><td>Cluster stuck "Pending"</td><td>No free IPs / EC2 quota hit</td><td>Add subnets / raise limits</td></tr>
+  <tr><td>Cluster fails with IAM error</td><td>Cross-account role perms</td><td>Re-apply Databricks policy</td></tr>
+  <tr><td><code>S3 AccessDenied</code> from notebook</td><td>Instance profile missing perms</td><td>Update profile policy</td></tr>
+  <tr><td>User can't see catalog</td><td>Missing <code>USE CATALOG</code></td><td>Grant USE CATALOG</td></tr>
+  <tr><td>Job runs forever</td><td>No timeout</td><td>Set timeout 1.5× expected</td></tr>
+  <tr><td>SQL warehouse slow to start</td><td>Classic warehouse</td><td>Switch to Serverless</td></tr>
+  <tr><td>OPTIMIZE not helping</td><td>Wrong ZORDER cols</td><td>Use most-filtered cols</td></tr>
+  <tr><td>Login blocked</td><td>IP list / SSO config</td><td>Add IP / fix IdP claims</td></tr>
+  <tr><td>PAT not working</td><td>Expired/disabled</td><td>Use OAuth / SP token</td></tr>
+  <tr><td>High AWS bill</td><td>Idle clusters / oversize WHs</td><td>Auto-term + right-size + serverless</td></tr>
+</table>
+</section>
+
+<!-- =============== SECTION 14 =============== -->
+<section id="s14">
+<h2>14. Glossary of Key Terms</h2>
+<table>
+  <tr><th>Term</th><th>Definition</th></tr>
+  <tr><td>ACL</td><td>Access Control List — permissions on workspace objects</td></tr>
+  <tr><td>Cluster Policy</td><td>JSON rule set governing cluster configuration</td></tr>
+  <tr><td>Control Plane</td><td>Databricks-managed services (UI, APIs, scheduler)</td></tr>
+  <tr><td>Compute Plane</td><td>Where clusters actually run (your AWS for Classic)</td></tr>
+  <tr><td>DBFS</td><td>Databricks File System — abstraction over S3</td></tr>
+  <tr><td>DBR</td><td>Databricks Runtime — managed Spark image</td></tr>
+  <tr><td>DBU</td><td>Databricks Unit — billing unit for compute</td></tr>
+  <tr><td>Delta Lake</td><td>Open-source ACID storage layer on Parquet</td></tr>
+  <tr><td>External Location</td><td>UC-governed reference to an S3 path</td></tr>
+  <tr><td>Instance Profile</td><td>IAM role attached to EC2 cluster nodes</td></tr>
+  <tr><td>Job Cluster</td><td>Ephemeral cluster created for a job run</td></tr>
+  <tr><td>Lakehouse</td><td>Data architecture: lake + warehouse</td></tr>
+  <tr><td>Metastore</td><td>Top-level UC container (1 per region)</td></tr>
+  <tr><td>MLflow</td><td>Open-source ML lifecycle tracking platform</td></tr>
+  <tr><td>PAT</td><td>Personal Access Token</td></tr>
+  <tr><td>Photon</td><td>Vectorized C++ Spark execution engine</td></tr>
+  <tr><td>PrivateLink</td><td>AWS service for private connectivity</td></tr>
+  <tr><td>SCIM</td><td>Standard protocol for IdP-driven user provisioning</td></tr>
+  <tr><td>Service Principal</td><td>Non-human identity for automation</td></tr>
+  <tr><td>SQL Warehouse</td><td>Compute optimized for SQL queries</td></tr>
+  <tr><td>Storage Credential</td><td>IAM role UC uses to access S3</td></tr>
+  <tr><td>Unity Catalog (UC)</td><td>Unified data + AI governance layer</td></tr>
+  <tr><td>Volume</td><td>UC-governed location for non-tabular files</td></tr>
+  <tr><td>Workspace</td><td>The Databricks environment for users</td></tr>
+</table>
+</section>
+
+<!-- =============== SECTION 15 =============== -->
+<section id="s15">
+<h2>15. Final Summary</h2>
+
+<h3>15.1 Key Takeaways</h3>
+<ul>
+  <li>Databricks is a unified Lakehouse on Spark + Delta + MLflow.</li>
+  <li>On AWS, Databricks integrates with EC2, S3, VPC, IAM, KMS, PrivateLink.</li>
+  <li><b>Unity Catalog</b> is the modern, mandatory governance layer.</li>
+  <li><b>Cluster policies</b> are the admin's most powerful enforcement tool.</li>
+  <li><b>SSO + SCIM + service principals</b> are required for production identity.</li>
+  <li><b>Terraform + DABs</b> are the recommended automation stack.</li>
+  <li><b>Tags + budgets + audit logs</b> form the foundation of FinOps + compliance.</li>
+</ul>
+
+<h3>15.2 Administrator Responsibilities Matrix</h3>
+<table>
+  <tr><th>Area</th><th>Responsibility</th></tr>
+  <tr><td>Workspace</td><td>Provision, configure, maintain workspaces</td></tr>
+  <tr><td>Identity</td><td>SSO, SCIM, group hygiene, access reviews</td></tr>
+  <tr><td>Compute</td><td>Cluster policies, runtime standards</td></tr>
+  <tr><td>Data</td><td>UC design, grants, lineage, masking</td></tr>
+  <tr><td>Security</td><td>PrivateLink, KMS, secrets, audit</td></tr>
+  <tr><td>Jobs</td><td>Reliability, alerting, SLAs</td></tr>
+  <tr><td>Cost</td><td>Tags, budgets, optimization</td></tr>
+  <tr><td>Automation</td><td>IaC (Terraform), CI/CD (DABs)</td></tr>
+  <tr><td>Support</td><td>Troubleshooting, runbook, incidents</td></tr>
+</table>
+
+<h3>15.3 Recommended Next Steps</h3>
+<ol>
+  <li>Complete all 8 labs in a sandbox workspace.</li>
+  <li>Take the <b>Databricks Certified Data Engineer Associate</b>.</li>
+  <li>Learn <b>Terraform</b> for Databricks.</li>
+  <li>Read the <b>Databricks Well-Architected Framework</b>.</li>
+  <li>Explore <b>Delta Live Tables (DLT)</b> for declarative pipelines.</li>
+  <li>Explore <b>MLflow</b> for ML workflows.</li>
+  <li>Pursue the <b>Databricks Platform Architect</b> certification.</li>
+</ol>
+</section>
+
+<!-- =============== SECTION 16 =============== -->
+<section id="s16">
+<h2>16. Interview-Style Questions</h2>
+
+<h3>Conceptual</h3>
+<ol>
+  <li><span class="qnum">Q1</span> Control Plane vs Compute Plane — what's the difference? <span class="badge basic">Basic</span></li>
+  <li><span class="qnum">Q2</span> Explain the Lakehouse architecture. <span class="badge basic">Basic</span></li>
+  <li><span class="qnum">Q3</span> What is Delta Lake and why is it important? <span class="badge basic">Basic</span></li>
+  <li><span class="qnum">Q4</span> Compare all-purpose, job, and SQL warehouse clusters. <span class="badge mid">Mid</span></li>
+  <li><span class="qnum">Q5</span> What is Unity Catalog and why prefer it over legacy Hive metastore? <span class="badge mid">Mid</span></li>
+</ol>
+
+<h3>Workspace &amp; Security</h3>
+<ol start="6">
+  <li><span class="qnum">Q6</span> How do you onboard a new user? <span class="badge basic">Basic</span></li>
+  <li><span class="qnum">Q7</span> What is a service principal and when to use it? <span class="badge mid">Mid</span></li>
+  <li><span class="qnum">Q8</span> How does SCIM provisioning work? <span class="badge mid">Mid</span></li>
+  <li><span class="qnum">Q9</span> What are secret scopes — supported backends? <span class="badge mid">Mid</span></li>
+  <li><span class="qnum">Q10</span> Restrict workspace access by IP — how? <span class="badge basic">Basic</span></li>
+  <li><span class="qnum">Q11</span> What is PrivateLink and why use it? <span class="badge adv">Adv</span></li>
+</ol>
+
+<h3>Clusters &amp; Cost</h3>
+<ol start="12">
+  <li><span class="qnum">Q12</span> What are cluster policies and what problems do they solve? <span class="badge mid">Mid</span></li>
+  <li><span class="qnum">Q13</span> Why is auto-termination important? <span class="badge basic">Basic</span></li>
+  <li><span class="qnum">Q14</span> What is Photon and when to use it? <span class="badge mid">Mid</span></li>
+  <li><span class="qnum">Q15</span> How to reduce cost of many all-purpose clusters? <span class="badge mid">Mid</span></li>
+  <li><span class="qnum">Q16</span> What tags should clusters carry? <span class="badge basic">Basic</span></li>
+  <li><span class="qnum">Q17</span> Spot vs on-demand in Databricks. <span class="badge mid">Mid</span></li>
+</ol>
+
+<h3>Unity Catalog</h3>
+<ol start="18">
+  <li><span class="qnum">Q18</span> Managed vs external table — difference? <span class="badge basic">Basic</span></li>
+  <li><span class="qnum">Q19</span> Write SQL to grant SELECT on a table to a group. <span class="badge basic">Basic</span></li>
+  <li><span class="qnum">Q20</span> Storage credential vs external location. <span class="badge mid">Mid</span></li>
+  <li><span class="qnum">Q21</span> How does UC handle data lineage? <span class="badge mid">Mid</span></li>
+  <li><span class="qnum">Q22</span> How many metastores per region and why? <span class="badge mid">Mid</span></li>
+  <li><span class="qnum">Q23</span> Implement column-level masking for PII. <span class="badge adv">Adv</span></li>
+</ol>
+
+<h3>Jobs &amp; SQL</h3>
+<ol start="24">
+  <li><span class="qnum">Q24</span> Job vs workflow — difference? <span class="badge basic">Basic</span></li>
+  <li><span class="qnum">Q25</span> Set up failure alerts for a job. <span class="badge basic">Basic</span></li>
+  <li><span class="qnum">Q26</span> Best SQL warehouse type for BI and why. <span class="badge mid">Mid</span></li>
+  <li><span class="qnum">Q27</span> How are dashboards permissioned? <span class="badge basic">Basic</span></li>
+  <li><span class="qnum">Q28</span> When to use a serverless SQL warehouse. <span class="badge mid">Mid</span></li>
+</ol>
+
+<h3>Automation</h3>
+<ol start="29">
+  <li><span class="qnum">Q29</span> What is the Databricks CLI used for? <span class="badge basic">Basic</span></li>
+  <li><span class="qnum">Q30</span> Provision a workspace using Terraform — how? <span class="badge adv">Adv</span></li>
+  <li><span class="qnum">Q31</span> What are Databricks Asset Bundles (DABs)? <span class="badge mid">Mid</span></li>
+  <li><span class="qnum">Q32</span> Implement a Dev → QA → Prod promotion flow. <span class="badge adv">Adv</span></li>
+</ol>
+
+<h3>Scenario-Based</h3>
+<ol start="33">
+  <li><span class="qnum">Q33</span> Nightly job fails intermittently — debug approach? <span class="badge adv">Adv</span></li>
+  <li><span class="qnum">Q34</span> Costs spiked last month — investigation steps? <span class="badge adv">Adv</span></li>
+  <li><span class="qnum">Q35</span> User dropped a production Delta table — recovery? <span class="badge adv">Adv</span></li>
+  <li><span class="qnum">Q36</span> Migrate workspace from Hive Metastore to Unity Catalog. <span class="badge adv">Adv</span></li>
+  <li><span class="qnum">Q37</span> New rule requires CMK encryption — what changes? <span class="badge adv">Adv</span></li>
+</ol>
+</section>
+
+<div class="footer-note">
+End of Training Document &middot; AWS Databricks Platform Administration<br>
+Adapt the labs to your environment and add your organization's specific naming, networking, and IAM standards.
+</div>
+
+</body>
+</html>
